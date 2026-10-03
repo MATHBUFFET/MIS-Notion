@@ -1,0 +1,557 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>使用者行為與科技使用模式研究</title>
+<script src="https://cdn.jsdelivr.net/npm/mermaid@10/dist/mermaid.min.js"></script>
+<style>
+  :root {
+    --primary: #0f172a;
+    --secondary: #1e40af;
+    --accent: #3b82f6;
+    --accent-soft: #dbeafe;
+    --bg: #f1f5f9;
+    --card: #ffffff;
+    --border: #e2e8f0;
+    --text: #1e293b;
+    --muted: #64748b;
+    --radius: 12px;
+    --shadow: 0 4px 6px -1px rgba(0,0,0,0.07), 0 2px 4px -2px rgba(0,0,0,0.05);
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body {
+    font-family: "Noto Sans TC", "Microsoft JhengHei", "PingFang TC", system-ui, -apple-system, sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    line-height: 1.65;
+    min-height: 100vh;
+  }
+  .page {
+    max-width: 1080px;
+    margin: 0 auto;
+    padding: 28px 18px 48px;
+  }
+
+  /* Header */
+  .hero {
+    background: linear-gradient(135deg, #1e3a8a 0%, #1e40af 50%, #3b82f6 100%);
+    color: #fff;
+    border-radius: 16px;
+    padding: 28px 26px 24px;
+    margin-bottom: 22px;
+    box-shadow: var(--shadow);
+  }
+  .hero h1 {
+    font-size: 1.55rem;
+    font-weight: 700;
+    letter-spacing: -0.02em;
+    margin-bottom: 6px;
+  }
+  .hero .sub {
+    font-size: 0.9rem;
+    opacity: 0.9;
+    margin-bottom: 14px;
+  }
+  .hero .hint {
+    background: rgba(255,255,255,0.15);
+    border-radius: 8px;
+    padding: 10px 14px;
+    font-size: 0.8rem;
+    line-height: 1.5;
+  }
+
+  /* Tabs */
+  .tabs-wrapper {
+    background: var(--card);
+    border-radius: 16px;
+    box-shadow: var(--shadow);
+    overflow: hidden;
+  }
+  .tab-bar {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+    padding: 12px 12px 0;
+    background: #f8fafc;
+    border-bottom: 1px solid var(--border);
+  }
+  .tab-btn {
+    flex: 1 1 140px;
+    padding: 11px 10px;
+    border: none;
+    background: transparent;
+    border-radius: 10px 10px 0 0;
+    font-family: inherit;
+    font-size: 0.8rem;
+    font-weight: 600;
+    color: var(--muted);
+    cursor: pointer;
+    transition: all 0.2s ease;
+    text-align: center;
+    line-height: 1.35;
+    position: relative;
+  }
+  .tab-btn .num {
+    display: block;
+    font-size: 0.68rem;
+    font-weight: 500;
+    opacity: 0.7;
+    margin-bottom: 1px;
+  }
+  .tab-btn:hover {
+    color: var(--secondary);
+    background: var(--accent-soft);
+  }
+  .tab-btn.active {
+    color: #fff;
+    background: var(--secondary);
+    box-shadow: 0 -2px 0 0 var(--secondary);
+  }
+  .tab-btn.active .num { opacity: 0.9; }
+
+  /* Panel */
+  .tab-panel {
+    display: none;
+    padding: 24px 22px 28px;
+    animation: fadeUp 0.28s ease;
+  }
+  .tab-panel.active { display: block; }
+  @keyframes fadeUp {
+    from { opacity: 0; transform: translateY(8px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  .panel-title {
+    font-size: 1.2rem;
+    font-weight: 700;
+    color: var(--primary);
+    margin-bottom: 4px;
+  }
+  .panel-model {
+    font-size: 0.88rem;
+    color: var(--muted);
+    margin-bottom: 18px;
+  }
+
+  /* Table */
+  .table-card {
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    overflow: auto;
+    margin-bottom: 20px;
+  }
+  table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 0.75rem;
+    min-width: 680px;
+  }
+  th {
+    background: #1e40af;
+    color: #fff;
+    padding: 10px 8px;
+    text-align: left;
+    font-weight: 600;
+    white-space: nowrap;
+  }
+  td {
+    padding: 8px;
+    border-bottom: 1px solid var(--border);
+    vertical-align: top;
+  }
+  tr:nth-child(even) td { background: #f8fafc; }
+  tr:hover td { background: #eff6ff; }
+  a {
+    color: #2563eb;
+    text-decoration: none;
+    word-break: break-all;
+  }
+  a:hover { text-decoration: underline; }
+
+  /* Diagram */
+  .diagram-title {
+    font-size: 0.95rem;
+    font-weight: 600;
+    color: var(--secondary);
+    margin: 8px 0 10px;
+  }
+  .diagram-box {
+    background: linear-gradient(180deg, #f8fafc 0%, #f1f5f9 100%);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 20px 14px;
+    overflow-x: auto;
+  }
+  .mermaid { display: flex; justify-content: center; }
+  .extra-note {
+    font-size: 0.8rem;
+    color: var(--muted);
+    margin-top: 8px;
+  }
+
+  footer {
+    text-align: center;
+    font-size: 0.75rem;
+    color: var(--muted);
+    margin-top: 22px;
+    padding: 12px;
+  }
+
+  @media (max-width: 640px) {
+    .tab-btn { flex: 1 1 46%; font-size: 0.72rem; padding: 9px 6px; }
+    .hero h1 { font-size: 1.25rem; }
+    .page { padding: 16px 12px 36px; }
+  }
+</style>
+</head>
+<body>
+<div class="page">
+
+  <div class="hero">
+    <h1>使用者行為與科技使用模式研究</h1>
+    <p class="sub">理論模型文獻整理與模型圖 · Top-Cited Papers + Classic Model Diagrams</p>
+    <div class="hint">
+      本報告彙整六個研究主題的高度引用論文（約依引用數排序）以及對應的經典理論模型圖。
+      引用數為 Google Scholar / Semantic Scholar 近期估計值，實際請以原始來源為準。
+      點擊下方頁籤切換主題，模型圖使用 Mermaid 繪製。
+    </div>
+  </div>
+
+  <div class="tabs-wrapper">
+    <div class="tab-bar" role="tablist">
+      <button class="tab-btn active" data-tab="p1" role="tab"><span class="num">主題 1</span>科技接受度意圖</button>
+      <button class="tab-btn" data-tab="p2" role="tab"><span class="num">主題 2</span>科技接受度行為</button>
+      <button class="tab-btn" data-tab="p3" role="tab"><span class="num">主題 3</span>滿意度</button>
+      <button class="tab-btn" data-tab="p4" role="tab"><span class="num">主題 4</span>持續使用</button>
+      <button class="tab-btn" data-tab="p5" role="tab"><span class="num">主題 5</span>行為改變</button>
+      <button class="tab-btn" data-tab="p6" role="tab"><span class="num">主題 6</span>關鍵成功因素</button>
+    </div>
+
+    <!-- Panel 1 -->
+    <div id="p1" class="tab-panel active" role="tabpanel">
+      <div class="panel-title">1. 科技接受度意圖 (Technology Acceptance Intention)</div>
+      <div class="panel-model">核心模型：Technology Acceptance Model (TAM, Davis 1989)</div>
+      <div class="table-card">
+        <table>
+          <thead><tr><th>序號</th><th>論文名稱</th><th>引用數(約)</th><th>出處</th><th>年份</th><th>URL</th></tr></thead>
+          <tbody>
+            <tr><td>1</td><td>Perceived Usefulness, Perceived Ease of Use, and User Acceptance of Information Technology</td><td>50k–70k+</td><td>MIS Quarterly</td><td>1989</td><td><a href="https://www.jstor.org/stable/249008" target="_blank">jstor.org/stable/249008</a></td></tr>
+            <tr><td>2</td><td>User Acceptance of Information Technology: Toward a Unified View (UTAUT)</td><td>45k–66k+</td><td>MIS Quarterly</td><td>2003</td><td><a href="https://www.jstor.org/stable/30036540" target="_blank">jstor.org/stable/30036540</a></td></tr>
+            <tr><td>3</td><td>A Theoretical Extension of the Technology Acceptance Model (TAM2)</td><td>30k–38k+</td><td>Management Science</td><td>2000</td><td><a href="https://doi.org/10.1287/mnsc.46.2.186.11926" target="_blank">doi.org/10.1287/mnsc.46.2.186.11926</a></td></tr>
+            <tr><td>4</td><td>User Acceptance of Computer Technology: A Comparison of Two Theoretical Models</td><td>20k+</td><td>Management Science</td><td>1989</td><td><a href="https://doi.org/10.1287/mnsc.35.8.982" target="_blank">doi.org/10.1287/mnsc.35.8.982</a></td></tr>
+            <tr><td>5</td><td>Technology Acceptance Model 3 and a Research Agenda on Interventions</td><td>10k–13k+</td><td>Decision Sciences</td><td>2008</td><td><a href="https://doi.org/10.1111/j.1540-5915.2008.00192.x" target="_blank">doi.org/10.1111/j.1540-5915.2008.00192.x</a></td></tr>
+            <tr><td>6</td><td>Determinants of Perceived Ease of Use...</td><td>10k+</td><td>Information Systems Research</td><td>2000</td><td><a href="https://doi.org/10.1287/isre.11.4.342.11872" target="_blank">doi.org/10.1287/isre.11.4.342.11872</a></td></tr>
+            <tr><td>7</td><td>Understanding Information Technology Usage: A Test of Competing Models</td><td>4k–5k+</td><td>Information Systems Research</td><td>1995</td><td><a href="https://doi.org/10.1287/isre.6.2.144" target="_blank">doi.org/10.1287/isre.6.2.144</a></td></tr>
+            <tr><td>8</td><td>Extrinsic and Intrinsic Motivation to Use Computers in the Workplace</td><td>多千次</td><td>J. Applied Social Psychology</td><td>1992</td><td><a href="https://doi.org/10.1111/j.1559-1816.1992.tb00945.x" target="_blank">doi.org/10.1111/...</a></td></tr>
+            <tr><td>9</td><td>Why Don't Men Ever Stop to Ask for Directions? Gender, Social Influence...</td><td>7k+</td><td>MIS Quarterly</td><td>2000</td><td><a href="https://www.jstor.org/stable/3250981" target="_blank">jstor.org/stable/3250981</a></td></tr>
+            <tr><td>10</td><td>Consumer Acceptance and Use of Information Technology: Extending UTAUT</td><td>15k–23k+</td><td>MIS Quarterly</td><td>2012</td><td><a href="https://www.jstor.org/stable/41410412" target="_blank">jstor.org/stable/41410412</a></td></tr>
+          </tbody>
+        </table>
+      </div>
+      <div class="diagram-title">模型圖：TAM (Davis 1989)</div>
+      <div class="diagram-box">
+        <pre class="mermaid">
+flowchart TD
+    EV[外部變數<br/>External Variables]
+    PU[感知有用性<br/>Perceived Usefulness]
+    PEOU[感知易用性<br/>Perceived Ease of Use]
+    ATT[使用態度<br/>Attitude Toward Using]
+    BI[行為意圖<br/>Behavioral Intention]
+    USE[實際使用<br/>Actual System Use]
+    EV --> PU
+    EV --> PEOU
+    PEOU --> PU
+    PU --> ATT
+    PEOU --> ATT
+    ATT --> BI
+    PU --> BI
+    BI --> USE
+    style PU fill:#bfdbfe,stroke:#1e40af
+    style PEOU fill:#bfdbfe,stroke:#1e40af
+    style ATT fill:#bbf7d0,stroke:#166534
+    style BI fill:#fef08a,stroke:#a16207
+    style USE fill:#fecaca,stroke:#b91c1c
+        </pre>
+      </div>
+    </div>
+
+    <!-- Panel 2 -->
+    <div id="p2" class="tab-panel" role="tabpanel">
+      <div class="panel-title">2. 科技接受度行為 (Technology Acceptance Behavior)</div>
+      <div class="panel-model">核心模型：UTAUT (Venkatesh et al. 2003)</div>
+      <div class="table-card">
+        <table>
+          <thead><tr><th>序號</th><th>論文名稱</th><th>引用數(約)</th><th>出處</th><th>年份</th><th>URL</th></tr></thead>
+          <tbody>
+            <tr><td>1</td><td>Perceived Usefulness, Perceived Ease of Use, and User Acceptance of Information Technology</td><td>50k–70k+</td><td>MIS Quarterly</td><td>1989</td><td><a href="https://www.jstor.org/stable/249008" target="_blank">jstor.org/stable/249008</a></td></tr>
+            <tr><td>2</td><td>User Acceptance of Information Technology: Toward a Unified View</td><td>45k–66k+</td><td>MIS Quarterly</td><td>2003</td><td><a href="https://www.jstor.org/stable/30036540" target="_blank">jstor.org/stable/30036540</a></td></tr>
+            <tr><td>3</td><td>User Acceptance of Information Technology: System Characteristics...</td><td>8k+</td><td>Int. J. Man-Machine Studies</td><td>1993</td><td><a href="https://doi.org/10.1006/imms.1993.1022" target="_blank">doi.org/10.1006/imms.1993.1022</a></td></tr>
+            <tr><td>4</td><td>Does the Technology Acceptance Model Predict Actual Use?</td><td>1.4k+</td><td>Information and Software Technology</td><td>2010</td><td><a href="https://doi.org/10.1016/j.infsof.2009.11.005" target="_blank">doi.org/10.1016/j.infsof.2009.11.005</a></td></tr>
+            <tr><td>5</td><td>Understanding Information Technology Usage: A Test of Competing Models</td><td>4k–5k+</td><td>Information Systems Research</td><td>1995</td><td><a href="https://doi.org/10.1287/isre.6.2.144" target="_blank">doi.org/10.1287/isre.6.2.144</a></td></tr>
+            <tr><td>6</td><td>A Theoretical Extension of the Technology Acceptance Model...</td><td>30k–38k+</td><td>Management Science</td><td>2000</td><td><a href="https://doi.org/10.1287/mnsc.46.2.186.11926" target="_blank">doi.org/10.1287/mnsc.46.2.186.11926</a></td></tr>
+            <tr><td>7</td><td>Consumer Acceptance and Use of Information Technology: Extending UTAUT</td><td>15k–23k+</td><td>MIS Quarterly</td><td>2012</td><td><a href="https://www.jstor.org/stable/41410412" target="_blank">jstor.org/stable/41410412</a></td></tr>
+            <tr><td>8</td><td>Technology Acceptance Model: A Literature Review from 1986 to 2013</td><td>2k–4k+</td><td>Universal Access in the Information Society</td><td>2015</td><td><a href="https://doi.org/10.1007/s10209-014-0348-1" target="_blank">doi.org/10.1007/s10209-014-0348-1</a></td></tr>
+            <tr><td>9</td><td>The Technology Acceptance Model: Past, Present, and Future</td><td>700+</td><td>Communications of the AIS</td><td>2003</td><td><a href="https://doi.org/10.17705/1CAIS.01250" target="_blank">doi.org/10.17705/1CAIS.01250</a></td></tr>
+            <tr><td>10</td><td>User Acceptance of Information Technology: Toward a Unified View (UTAUT)</td><td>45k–66k+</td><td>MIS Quarterly</td><td>2003</td><td><a href="https://www.jstor.org/stable/30036540" target="_blank">jstor.org/stable/30036540</a></td></tr>
+          </tbody>
+        </table>
+      </div>
+      <div class="diagram-title">模型圖：UTAUT (Venkatesh et al. 2003)</div>
+      <div class="diagram-box">
+        <pre class="mermaid">
+flowchart TD
+    PE[Performance Expectancy<br/>績效期望]
+    EE[Effort Expectancy<br/>努力期望]
+    SI[Social Influence<br/>社會影響]
+    FC[Facilitating Conditions<br/>促成條件]
+    BI[Behavioral Intention<br/>行為意圖]
+    UB[Use Behavior<br/>使用行為]
+    PE --> BI
+    EE --> BI
+    SI --> BI
+    FC --> BI
+    FC --> UB
+    BI --> UB
+    style PE fill:#bfdbfe,stroke:#1e40af
+    style EE fill:#bfdbfe,stroke:#1e40af
+    style SI fill:#bfdbfe,stroke:#1e40af
+    style FC fill:#bbf7d0,stroke:#166534
+    style BI fill:#fef08a,stroke:#a16207
+    style UB fill:#fecaca,stroke:#b91c1c
+        </pre>
+      </div>
+      <p class="extra-note">調節變數：Gender、Age、Experience、Voluntariness of Use</p>
+    </div>
+
+    <!-- Panel 3 -->
+    <div id="p3" class="tab-panel" role="tabpanel">
+      <div class="panel-title">3. 滿意度 (Satisfaction / User Satisfaction)</div>
+      <div class="panel-model">核心模型：DeLone &amp; McLean IS Success Model (2003)</div>
+      <div class="table-card">
+        <table>
+          <thead><tr><th>序號</th><th>論文名稱</th><th>引用數(約)</th><th>出處</th><th>年份</th><th>URL</th></tr></thead>
+          <tbody>
+            <tr><td>1</td><td>Information Systems Success: The Quest for the Dependent Variable</td><td>10k+</td><td>Information Systems Research</td><td>1992</td><td><a href="https://doi.org/10.1287/isre.3.1.60" target="_blank">doi.org/10.1287/isre.3.1.60</a></td></tr>
+            <tr><td>2</td><td>The DeLone and McLean Model of Information Systems Success: A Ten-Year Update</td><td>10k+</td><td>J. Management Information Systems</td><td>2003</td><td><a href="https://doi.org/10.1080/07421222.2003.11045748" target="_blank">doi.org/10.1080/07421222.2003.11045748</a></td></tr>
+            <tr><td>3</td><td>The Measurement of User Information Satisfaction</td><td>多千次</td><td>Communications of the ACM</td><td>1983</td><td><a href="https://doi.org/10.1145/358413.358430" target="_blank">doi.org/10.1145/358413.358430</a></td></tr>
+            <tr><td>4</td><td>Development of a Tool for Measuring and Analyzing Computer User Satisfaction</td><td>多千次</td><td>Management Science</td><td>1983</td><td><a href="https://doi.org/10.1287/mnsc.29.5.530" target="_blank">doi.org/10.1287/mnsc.29.5.530</a></td></tr>
+            <tr><td>5</td><td>Understanding Information Systems Continuance: An Expectation-Confirmation Model</td><td>7k–15k+</td><td>MIS Quarterly</td><td>2001</td><td><a href="https://www.jstor.org/stable/3250921" target="_blank">jstor.org/stable/3250921</a></td></tr>
+            <tr><td>6</td><td>A Critical Review of End-User Information System Satisfaction Research...</td><td>數百–千次</td><td>Omega</td><td>2002</td><td><a href="https://doi.org/10.1016/S0305-0483(02)00054-3" target="_blank">doi.org/10.1016/S0305-0483(02)00054-3</a></td></tr>
+            <tr><td>7</td><td>User Satisfaction Research in Information Systems...</td><td>數百次</td><td>Communications of the AIS</td><td>2016</td><td><a href="https://doi.org/10.17705/1CAIS.03827" target="_blank">doi.org/10.17705/1CAIS.03827</a></td></tr>
+            <tr><td>8</td><td>Extending the Understanding of End User Information Systems Satisfaction...</td><td>數百–千次</td><td>MIS Quarterly</td><td>2008</td><td><a href="https://www.jstor.org/stable/25148850" target="_blank">jstor.org/stable/25148850</a></td></tr>
+            <tr><td>9</td><td>Measuring IS User Satisfaction: Review and Implications</td><td>數百次</td><td>各來源</td><td>各種</td><td>搜尋標題</td></tr>
+            <tr><td>10</td><td>Factors Influencing User Satisfaction with Information Systems...</td><td>數百次</td><td>Galen Medical Journal 等</td><td>2020</td><td><a href="https://www.ncbi.nlm.nih.gov/pmc/articles/PMC8343607/" target="_blank">ncbi.nlm.nih.gov/pmc/...</a></td></tr>
+          </tbody>
+        </table>
+      </div>
+      <div class="diagram-title">模型圖：DeLone &amp; McLean IS Success Model (2003)</div>
+      <div class="diagram-box">
+        <pre class="mermaid">
+flowchart TD
+    SQ[System Quality<br/>系統品質]
+    IQ[Information Quality<br/>資訊品質]
+    Seq[Service Quality<br/>服務品質]
+    IU[Intention to Use / Use<br/>使用意圖 / 使用]
+    US[User Satisfaction<br/>使用者滿意度]
+    NB[Net Benefits<br/>淨效益]
+    SQ --> IU
+    IQ --> IU
+    Seq --> IU
+    SQ --> US
+    IQ --> US
+    Seq --> US
+    IU --> US
+    IU --> NB
+    US --> NB
+    NB -.->|回饋| IU
+    NB -.->|回饋| US
+    style SQ fill:#bfdbfe,stroke:#1e40af
+    style IQ fill:#bfdbfe,stroke:#1e40af
+    style Seq fill:#bfdbfe,stroke:#1e40af
+    style IU fill:#bbf7d0,stroke:#166534
+    style US fill:#fef08a,stroke:#a16207
+    style NB fill:#fecaca,stroke:#b91c1c
+        </pre>
+      </div>
+    </div>
+
+    <!-- Panel 4 -->
+    <div id="p4" class="tab-panel" role="tabpanel">
+      <div class="panel-title">4. 持續使用 (Continuance / Continuous Use Intention)</div>
+      <div class="panel-model">核心模型：Expectation-Confirmation Model (ECM, Bhattacherjee 2001)</div>
+      <div class="table-card">
+        <table>
+          <thead><tr><th>序號</th><th>論文名稱</th><th>引用數(約)</th><th>出處</th><th>年份</th><th>URL</th></tr></thead>
+          <tbody>
+            <tr><td>1</td><td>Understanding Information Systems Continuance: An Expectation-Confirmation Model</td><td>7k–15k+</td><td>MIS Quarterly</td><td>2001</td><td><a href="https://www.jstor.org/stable/3250921" target="_blank">jstor.org/stable/3250921</a></td></tr>
+            <tr><td>2</td><td>An Empirical Analysis of the Antecedents of Electronic Commerce Service Continuance</td><td>1.5k–2.5k+</td><td>Decision Support Systems</td><td>2001</td><td><a href="https://doi.org/10.1016/S0167-9236(01)00111-7" target="_blank">doi.org/10.1016/S0167-9236(01)00111-7</a></td></tr>
+            <tr><td>3</td><td>Understanding Changes in Belief and Attitude Toward Information Technology Usage...</td><td>2k–3k+</td><td>MIS Quarterly</td><td>2004</td><td><a href="https://www.jstor.org/stable/25148634" target="_blank">jstor.org/stable/25148634</a></td></tr>
+            <tr><td>4</td><td>A Unified Model of IT Continuance...</td><td>數百–千次</td><td>European J. Information Systems</td><td>2015</td><td><a href="https://doi.org/10.1057/ejis.2013.36" target="_blank">doi.org/10.1057/ejis.2013.36</a></td></tr>
+            <tr><td>5</td><td>Information Technology Continuance: A Theoretic Extension and Empirical Test</td><td>800+</td><td>J. Computer Information Systems</td><td>2008</td><td><a href="https://doi.org/10.1080/08874417.2008.11645302" target="_blank">doi.org/10.1080/08874417.2008.11645302</a></td></tr>
+            <tr><td>6</td><td>Extending the Two-Stage Information Systems Continuance Model...</td><td>1k+</td><td>Information Systems Journal</td><td>2011</td><td><a href="https://doi.org/10.1111/j.1365-2575.2011.00373.x" target="_blank">doi.org/10.1111/j.1365-2575.2011.00373.x</a></td></tr>
+            <tr><td>7</td><td>Consumer Acceptance and Use of Information Technology: Extending UTAUT</td><td>15k–23k+</td><td>MIS Quarterly</td><td>2012</td><td><a href="https://www.jstor.org/stable/41410412" target="_blank">jstor.org/stable/41410412</a></td></tr>
+            <tr><td>8</td><td>An Extended Expectation-Confirmation Model for Information Systems Continuance</td><td>數百次</td><td>各期刊</td><td>2007左右</td><td>搜尋標題</td></tr>
+            <tr><td>9</td><td>Explaining Information Technology Usage: A Test of Competing Models</td><td>600+</td><td>Omega</td><td>2008</td><td><a href="https://doi.org/10.1016/j.omega.2005.12.004" target="_blank">doi.org/10.1016/j.omega.2005.12.004</a></td></tr>
+            <tr><td>10</td><td>A Theoretical Extension of the Technology Acceptance Model...</td><td>30k+</td><td>Management Science</td><td>2000</td><td><a href="https://doi.org/10.1287/mnsc.46.2.186.11926" target="_blank">doi.org/10.1287/mnsc.46.2.186.11926</a></td></tr>
+          </tbody>
+        </table>
+      </div>
+      <div class="diagram-title">模型圖：Expectation-Confirmation Model (Bhattacherjee 2001)</div>
+      <div class="diagram-box">
+        <pre class="mermaid">
+flowchart TD
+    Conf[Confirmation<br/>確認]
+    PU[Perceived Usefulness<br/>感知有用性]
+    Sat[Satisfaction<br/>滿意度]
+    CI[Continuance Intention<br/>持續使用意圖]
+    Conf --> Sat
+    Conf --> PU
+    PU --> Sat
+    Sat --> CI
+    PU --> CI
+    style Conf fill:#bfdbfe,stroke:#1e40af
+    style PU fill:#bbf7d0,stroke:#166534
+    style Sat fill:#fef08a,stroke:#a16207
+    style CI fill:#fecaca,stroke:#b91c1c
+        </pre>
+      </div>
+    </div>
+
+    <!-- Panel 5 -->
+    <div id="p5" class="tab-panel" role="tabpanel">
+      <div class="panel-title">5. 行為改變 (Behavior Change)</div>
+      <div class="panel-model">核心模型：Theory of Planned Behavior (TPB, Ajzen 1991)</div>
+      <div class="table-card">
+        <table>
+          <thead><tr><th>序號</th><th>論文名稱</th><th>引用數(約)</th><th>出處</th><th>年份</th><th>URL</th></tr></thead>
+          <tbody>
+            <tr><td>1</td><td>The Theory of Planned Behavior</td><td>90k–100k+</td><td>Organizational Behavior and Human Decision Processes</td><td>1991</td><td><a href="https://doi.org/10.1016/0749-5978(91)90020-T" target="_blank">doi.org/10.1016/0749-5978(91)90020-T</a></td></tr>
+            <tr><td>2</td><td>Understanding Attitudes and Predicting Social Behavior (TRA)</td><td>數萬次</td><td>Prentice-Hall</td><td>1980</td><td>Fishbein &amp; Ajzen 1980</td></tr>
+            <tr><td>3</td><td>Self-Efficacy: Toward a Unifying Theory of Behavioral Change</td><td>數十萬次</td><td>Psychological Review</td><td>1977</td><td><a href="https://doi.org/10.1037/0033-295X.84.2.191" target="_blank">doi.org/10.1037/0033-295X.84.2.191</a></td></tr>
+            <tr><td>4</td><td>A Behavior Change Model for Internet Interventions</td><td>數百–千次</td><td>Annals of Behavioral Medicine 等</td><td>2009左右</td><td>搜尋標題</td></tr>
+            <tr><td>5</td><td>Health Behavior Models in the Age of Mobile Interventions...</td><td>數百次</td><td>American Journal of Preventive Medicine</td><td>2011</td><td><a href="https://doi.org/10.1016/j.amepre.2010.12.001" target="_blank">doi.org/10.1016/j.amepre.2010.12.001</a></td></tr>
+            <tr><td>6</td><td>Behavior Change Techniques Implemented in Electronic Lifestyle Activity Monitors...</td><td>數百次</td><td>Journal of Medical Internet Research</td><td>2014</td><td><a href="https://doi.org/10.2196/jmir.3469" target="_blank">doi.org/10.2196/jmir.3469</a></td></tr>
+            <tr><td>7</td><td>Text Messaging as a Tool for Behavior Change...</td><td>數百–千次</td><td>Epidemiologic Reviews</td><td>2010</td><td><a href="https://doi.org/10.1093/epirev/mxq004" target="_blank">doi.org/10.1093/epirev/mxq004</a></td></tr>
+            <tr><td>8</td><td>Digital Health Behavior Change Technology...</td><td>數百次</td><td>相關期刊</td><td>2019左右</td><td>搜尋標題</td></tr>
+            <tr><td>9</td><td>The Theory of Planned Behavior: Frequently Asked Questions</td><td>5k+</td><td>Human Behavior and Emerging Technologies</td><td>2020</td><td><a href="https://doi.org/10.1002/hbe2.195" target="_blank">doi.org/10.1002/hbe2.195</a></td></tr>
+            <tr><td>10</td><td>其他高度引用的 mHealth 行為改變論文</td><td>數百–千次</td><td>JMIR 等</td><td>近年</td><td>搜尋 behavior change digital health</td></tr>
+          </tbody>
+        </table>
+      </div>
+      <div class="diagram-title">模型圖：Theory of Planned Behavior (Ajzen 1991)</div>
+      <div class="diagram-box">
+        <pre class="mermaid">
+flowchart TD
+    ATT[Attitude<br/>行為態度]
+    SN[Subjective Norm<br/>主觀規範]
+    PBC[Perceived Behavioral Control<br/>知覺行為控制]
+    INT[Intention<br/>意圖]
+    BEH[Behavior<br/>行為]
+    ATT --> INT
+    SN --> INT
+    PBC --> INT
+    PBC --> BEH
+    INT --> BEH
+    style ATT fill:#bfdbfe,stroke:#1e40af
+    style SN fill:#bfdbfe,stroke:#1e40af
+    style PBC fill:#bbf7d0,stroke:#166534
+    style INT fill:#fef08a,stroke:#a16207
+    style BEH fill:#fecaca,stroke:#b91c1c
+        </pre>
+      </div>
+    </div>
+
+    <!-- Panel 6 -->
+    <div id="p6" class="tab-panel" role="tabpanel">
+      <div class="panel-title">6. 關鍵成功因素 (Critical Success Factors)</div>
+      <div class="panel-model">CSF 方法論（Rockart 1979）· 常見 ERP/IS 實施概念圖</div>
+      <div class="table-card">
+        <table>
+          <thead><tr><th>序號</th><th>論文名稱</th><th>引用數(約)</th><th>出處</th><th>年份</th><th>URL</th></tr></thead>
+          <tbody>
+            <tr><td>1</td><td>Chief Executives Define Their Own Data Needs</td><td>多千次</td><td>Harvard Business Review</td><td>1979</td><td><a href="https://hbr.org/1979/03/chief-executives-define-their-own-data-needs" target="_blank">hbr.org/1979/03/...</a></td></tr>
+            <tr><td>2</td><td>An Assessment of Critical Success Factors</td><td>多千次</td><td>Sloan Management Review</td><td>1984</td><td>搜尋 Boynton &amp; Zmud 1984</td></tr>
+            <tr><td>3</td><td>Critical Success Factors for the Implementation of Enterprise Systems...</td><td>數百次</td><td>Strategic Change</td><td>2018</td><td><a href="https://doi.org/10.1002/jsc.2194" target="_blank">doi.org/10.1002/jsc.2194</a></td></tr>
+            <tr><td>4</td><td>Critical Success Factors Revisited...</td><td>數百次</td><td>Decision Support Systems</td><td>2001</td><td><a href="https://doi.org/10.1016/S0167-9236(00)00069-5" target="_blank">doi.org/10.1016/S0167-9236(00)00069-5</a></td></tr>
+            <tr><td>5</td><td>Making Sense of the History of Information Systems Research...</td><td>數百次</td><td>Communications of the AIS</td><td>2015</td><td><a href="https://doi.org/10.17705/1CAIS.03625" target="_blank">doi.org/10.17705/1CAIS.03625</a></td></tr>
+            <tr><td>6</td><td>Enterprise Resource Planning: Implementation Procedures and Critical Success Factors</td><td>多千次</td><td>European J. Operational Research</td><td>2003</td><td><a href="https://doi.org/10.1016/S0377-2217(02)00547-7" target="_blank">doi.org/10.1016/S0377-2217(02)00547-7</a></td></tr>
+            <tr><td>7</td><td>Critical Success Factors in ERP Implementation: A Review</td><td>數百次</td><td>各期刊</td><td>2000s–2010s</td><td>搜尋標題</td></tr>
+            <tr><td>8</td><td>The 500 Most-Cited Articles in Management Information Systems...</td><td>近期</td><td>Information Systems Frontiers</td><td>2025/2026</td><td><a href="https://doi.org/10.1007/s10796-025-10687-y" target="_blank">doi.org/10.1007/s10796-025-10687-y</a></td></tr>
+            <tr><td>9</td><td>Critical Success Factors: An Annotated Bibliography</td><td>數百次</td><td>MIT CISR Working Paper</td><td>1989</td><td>搜尋 Rockart &amp; Forster</td></tr>
+            <tr><td>10</td><td>其他高度引用的 ERP / IS 實施 CSF 論文</td><td>數百–千次</td><td>各 IS 期刊</td><td>2000s</td><td>搜尋 ERP critical success factors</td></tr>
+          </tbody>
+        </table>
+      </div>
+      <div class="diagram-title">概念圖：Critical Success Factors（常見 ERP/IS 實施架構）</div>
+      <div class="diagram-box">
+        <pre class="mermaid">
+flowchart TD
+    Org[組織因素<br/>Top Management Support<br/>Clear Goals]
+    Tech[技術因素<br/>System Quality<br/>Data Accuracy]
+    People[人員因素<br/>User Training<br/>User Involvement]
+    Process[流程因素<br/>Business Process<br/>Reengineering]
+    Success[成功實施<br/>Successful Implementation]
+    Benefits[系統效益 / 滿意度 / 績效]
+    Org --> Success
+    Tech --> Success
+    People --> Success
+    Process --> Success
+    Success --> Benefits
+    style Org fill:#bfdbfe,stroke:#1e40af
+    style Tech fill:#bfdbfe,stroke:#1e40af
+    style People fill:#bbf7d0,stroke:#166534
+    style Process fill:#bbf7d0,stroke:#166534
+    style Success fill:#fef08a,stroke:#a16207
+    style Benefits fill:#fecaca,stroke:#b91c1c
+        </pre>
+      </div>
+    </div>
+  </div>
+
+  <footer>
+    引用數為近似值，請以 Google Scholar 最新數字為準。模型圖結構忠實於原始文獻。僅供學術研究參考。
+  </footer>
+</div>
+
+<script>
+  const btns = document.querySelectorAll('.tab-btn');
+  const panels = document.querySelectorAll('.tab-panel');
+
+  btns.forEach(btn => {
+    btn.addEventListener('click', () => {
+      btns.forEach(b => b.classList.remove('active'));
+      panels.forEach(p => p.classList.remove('active'));
+      btn.classList.add('active');
+      const panel = document.getElementById(btn.dataset.tab);
+      if (panel) {
+        panel.classList.add('active');
+        renderMermaid(panel);
+      }
+    });
+  });
+
+  mermaid.initialize({
+    startOnLoad: false,
+    theme: 'default',
+    flowchart: { useMaxWidth: true, htmlLabels: true, curve: 'basis' },
+    securityLevel: 'loose'
+  });
+
+  function renderMermaid(container) {
+    container.querySelectorAll('pre.mermaid').forEach((el, i) => {
+      if (el.querySelector('svg')) return;
+      const id = 'm-' + Date.now() + '-' + i;
+      const code = el.textContent.trim();
+      mermaid.render(id, code).then(({ svg }) => {
+        el.innerHTML = svg;
+      }).catch(e => console.warn(e));
+    });
+  }
+
+  // initial
+  const first = document.querySelector('.tab-panel.active');
+  if (first) renderMermaid(first);
+</script>
+</body>
+</html>
